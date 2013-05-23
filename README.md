@@ -1,4 +1,5 @@
-pluginhost
-==========
+## pluginhost
 
-KISSY PluginHost
+* 版本：1.0
+
+
