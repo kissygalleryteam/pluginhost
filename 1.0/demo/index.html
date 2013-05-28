@@ -4,9 +4,30 @@
     <meta charset="utf-8"/>
     <title>demo标题</title>
     <script src="http://a.tbcdn.cn/s/kissy/1.3.0/kissy-min.js" charset="utf-8"></script>
+    <style>
+    	.box {
+    		width: 100px;
+    		height: 100px;
+    		background: #999;
+    	}
+    </style>
 </head>
 <body>
 <h2>demo标题</h2>
+<div class="container">
+	<div class="box"></div>
+	<div class="ctrl">
+		<button class="plug">plug</button>
+		<button class="unplug" disabled="disabled">unplug</button>
+		<button class="show" disabled="disabled">show</button>
+		<button class="hide" disabled="disabled">hide</button>
+		<p>
+			<label><input type="radio" name="type" value="display" checked="checked" /> display</label>
+			<label><input type="radio" name="type" value="visibility" /> visibility</label>
+		</p>
+	</div>
+</div>
+
 
 <script>
     var S = KISSY;
@@ -24,9 +45,100 @@
         });
     }
 
-    S.use('gallery/pluginhost/1.0/index', function (S, Pluginhost) {
-         var pluginhost = new Pluginhost();
-    })
+    S.use('node,gallery/pluginhost/1.0/index', function (S, Node, PluginHost) {
+        //给Node类扩充插件功能
+		S.augment(Node, PluginHost);
+		
+		function Visible(cfg) {
+			//host为当前Node实例对象
+			this._host = cfg.host;
+			this.setAttrs(cfg);
+		}
+		
+		//插件命名空间
+		Visible.NS = 'vs';
+		
+		Visible.prototype = {
+			
+			show: function() {
+				//host有可能为NodeList
+				this._host.each(function(node) {
+					if (this._cfg.visibility) {
+						node.css('visibility', 'visible');
+					} else {
+						node.css('display', 'block');
+					}
+				}, this);
+			},
+			
+			hide: function() {
+				//host有可能为NodeList
+				this._host.each(function(node) {
+					if (this._cfg.visibility) {
+						node.css('visibility', 'hidden');
+					} else {
+						node.css('display', 'none');
+					}
+				}, this);
+			},
+			
+			setAttrs: function(cfg) {
+				this._cfg = S.mix(this._cfg || {}, cfg);
+			},
+			
+			//unplug时会调用destroy的方法
+			destroy: function() {
+				this._host = null;
+				delete this._host;
+			}
+			
+		};
+		
+		var box = S.one('.box');
+			plug = S.one('.plug'),
+			unplug = S.one('.unplug'),
+			show = S.one('.show'),
+			hide = S.one('.hide'),
+			types = S.all('input');
+		
+		function isVisibility() {
+			return !types.item(0).prop('checked');
+		}
+		
+		plug.on('click', function(e) {
+			var cfg = {
+				visibility: isVisibility()
+			};
+			box.plug(Visible, cfg);
+			unplug.prop('disabled', false);
+			show.prop('disabled', false);
+			hide.prop('disabled', false);
+		});
+		
+		unplug.on('click', function() {
+			box.unplug('vs');
+			unplug.prop('disabled', true);
+			show.prop('disabled', true);
+			hide.prop('disabled', true);
+		});
+		
+		show.on('click', function() {
+			box.vs && box.vs.show();
+		});
+		
+		hide.on('click', function() {
+			box.vs && box.vs.hide();
+		});
+		
+		types.on('click', function() {
+			var cfg = {
+				visibility: isVisibility()
+			};
+			if (box.vs) {
+				box.vs.setAttrs(cfg);
+			}
+		});
+   });
 </script>
 </body>
 </html>
