@@ -116,10 +116,13 @@
 		});
 		
 		unplug.on('click', function() {
-			box.unplug('vs');
-			unplug.prop('disabled', true);
-			show.prop('disabled', true);
-			hide.prop('disabled', true);
+			if (box.vs) {
+				box.vs.show();
+				box.unplug('vs');
+				unplug.prop('disabled', true);
+				show.prop('disabled', true);
+				hide.prop('disabled', true);
+			}
 		});
 		
 		show.on('click', function() {
