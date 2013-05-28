@@ -69,7 +69,7 @@
 			var box = S.one('.box');
 			
 			//绑定插件
-			box.plug(Visible， {
+			box.plug(Visible, {
 				visibility: true
 			});
 			
