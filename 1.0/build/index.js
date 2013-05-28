@@ -24,6 +24,13 @@ KISSY.add('gallery/pluginhost/1.0/index',function (S) {
     
     /**
      * 插件宿主构造函数
+		
+		S.augment(MyClass, S.PluginHost);
+		var myInstance = new MyClass(cfg);
+		myInstance.plug(MyPlugin, cfg);
+		myInstance.pluginNS.pluginMethod();
+		myInstance.unplug(pluginNS);
+		
      * @class PluginHost
      * @for PluginHost
      * @constructor
@@ -89,7 +96,7 @@ KISSY.add('gallery/pluginhost/1.0/index',function (S) {
          */
         unplug: function(plugin) {
             var ns = plugin, 
-                plugins = this._plugins || {};
+                plugins = this._plugins || (this._plugins = {});
             
             if (plugin) {
                 if (S.isFunction(plugin)) {
@@ -134,17 +141,9 @@ KISSY.add('gallery/pluginhost/1.0/index',function (S) {
     });
 
     S.PluginHost = PluginHost;
-    S.namespace('NodePlugin');
-    
-    //通过augment扩充到宿主中
-    if (S.Node) {
-        S.augment(S.Node, PluginHost);
-    }
     
     return PluginHost;
 
-}, {
-    requires: ['node']
 });
 
 
