@@ -7,7 +7,7 @@ gallery/pluginhost/1.0/index
 /**
  * S.PluginHost
  * @fileoverview 插件宿主
- * @author huya<ningzbruc@gmail.com>
+ * @author 虎牙<ningzbruc@gmail.com>
  * @module pluginhost
  * @date 2013-01-07
  * @version 0.0.1
